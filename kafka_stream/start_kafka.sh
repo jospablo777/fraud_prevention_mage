@@ -27,3 +27,15 @@ fi
 
 # Show topics
 docker exec broker sh -lc "/opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:29092 --list"
+
+# Create
+docker exec -it -w /opt/kafka/bin broker sh -lc \
+  './kafka-topics.sh --create \
+    --topic creditcard-transactions \
+    --bootstrap-server broker:29092 \
+    --partitions 3 \
+    --replication-factor 1'
+
+# Verify
+docker exec -it -w /opt/kafka/bin broker sh -lc \
+  './kafka-topics.sh --list --bootstrap-server broker:29092'
