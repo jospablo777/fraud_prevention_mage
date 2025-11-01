@@ -138,12 +138,14 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
+    { name = "rich" },
     { name = "sdv" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.120.4" },
+    { name = "rich", specifier = ">=14.2.0" },
     { name = "sdv", specifier = ">=1.28.0" },
 ]
 
