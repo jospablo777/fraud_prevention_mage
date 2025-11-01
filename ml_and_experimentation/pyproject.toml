@@ -1,0 +1,10 @@
+[project]
+name = "ml-and-experimentation"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12, <3.13"
+dependencies = [
+    "jupyterlab>=4.4.10",
+    "sdv>=1.28.0",
+]
