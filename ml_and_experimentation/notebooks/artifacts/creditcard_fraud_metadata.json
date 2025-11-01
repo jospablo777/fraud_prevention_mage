@@ -1,0 +1,100 @@
+{
+    "tables": {
+        "creditcard": {
+            "columns": {
+                "V1": {
+                    "sdtype": "numerical"
+                },
+                "V2": {
+                    "sdtype": "numerical"
+                },
+                "V3": {
+                    "sdtype": "numerical"
+                },
+                "V4": {
+                    "sdtype": "numerical"
+                },
+                "V5": {
+                    "sdtype": "numerical"
+                },
+                "V6": {
+                    "sdtype": "numerical"
+                },
+                "V7": {
+                    "sdtype": "numerical"
+                },
+                "V8": {
+                    "sdtype": "numerical"
+                },
+                "V9": {
+                    "sdtype": "numerical"
+                },
+                "V10": {
+                    "sdtype": "numerical"
+                },
+                "V11": {
+                    "sdtype": "numerical"
+                },
+                "V12": {
+                    "sdtype": "numerical"
+                },
+                "V13": {
+                    "sdtype": "numerical"
+                },
+                "V14": {
+                    "sdtype": "numerical"
+                },
+                "V15": {
+                    "sdtype": "numerical"
+                },
+                "V16": {
+                    "sdtype": "numerical"
+                },
+                "V17": {
+                    "sdtype": "numerical"
+                },
+                "V18": {
+                    "sdtype": "numerical"
+                },
+                "V19": {
+                    "sdtype": "numerical"
+                },
+                "V20": {
+                    "sdtype": "numerical"
+                },
+                "V21": {
+                    "sdtype": "numerical"
+                },
+                "V22": {
+                    "sdtype": "numerical"
+                },
+                "V23": {
+                    "sdtype": "numerical"
+                },
+                "V24": {
+                    "sdtype": "numerical"
+                },
+                "V25": {
+                    "sdtype": "numerical"
+                },
+                "V26": {
+                    "sdtype": "numerical"
+                },
+                "V27": {
+                    "sdtype": "numerical"
+                },
+                "V28": {
+                    "sdtype": "numerical"
+                },
+                "Amount": {
+                    "sdtype": "numerical"
+                },
+                "Class": {
+                    "sdtype": "categorical"
+                }
+            }
+        }
+    },
+    "relationships": [],
+    "METADATA_SPEC_VERSION": "V1"
+}
