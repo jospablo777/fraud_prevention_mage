@@ -1,0 +1,9 @@
+[project]
+name = "fraud-prevention-pipeline"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12, <3.13"
+dependencies = [
+    "mage-ai>=0.9.78",
+]
