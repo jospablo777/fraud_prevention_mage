@@ -254,3 +254,5 @@ data/
 # Others
 .ssh_tunnel/
 *.parquet
+
+artifacts/
