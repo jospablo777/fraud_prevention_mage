@@ -3,6 +3,8 @@ from pathlib import Path
 import duckdb
 import pandas as pd
 import streamlit as st
+from datetime import datetime, timezone
+import time
 
 # Config (env) 
 DATA_ROOT = Path(os.getenv("DATA_ROOT", "/var/lib/mage/data"))
@@ -12,8 +14,22 @@ DEFAULT_LIMIT = int(os.getenv("DEFAULT_LIMIT", "50"))
 st.set_page_config(page_title="Transactions with High-Risk of fraud", layout="wide")
 st.title("Transactions with Higher Risk (of Fraud)")
 
+# Refresh controls
+REFRESH_DEFAULT = int(os.getenv("REFRESH_SECONDS", "5"))
+c1, c2, c3 = st.columns([1.1, 1, 2.2])
+with c1:
+    auto_refresh = st.toggle("Auto-refresh", value=True, key="auto_refresh")
+with c2:
+    refresh_secs = st.number_input("Every (s)", min_value=2, max_value=120,
+                                   value=REFRESH_DEFAULT, step=1, key="refresh_secs")
+with c3:
+    if st.button("Refresh now"):
+        st.rerun()
+
 # DuckDB + Parquet view 
 con = duckdb.connect(database=":memory:")
+con.execute("PRAGMA disable_object_cache;")  # ensure new/updated parquet files are not cached
+
 pattern = str(DATA_ROOT / GRAIN / "year=*" / "month=*" / "*.parquet")
 
 # Create a stable view that exposes the 3 columns we care about.
@@ -35,6 +51,38 @@ if stats["n"].iloc[0] == 0 or pd.isna(stats["min_ts"].iloc[0]):
 
 min_ts = pd.to_datetime(stats["min_ts"].iloc[0])
 max_ts = pd.to_datetime(stats["max_ts"].iloc[0])
+
+# KPI tiles (total rows + latest event time) 
+def _pretty_delta(ts: pd.Timestamp | None) -> str:
+    if ts is None or pd.isna(ts):
+        return "—"
+    now = pd.Timestamp.utcnow()
+    try:
+        delta = now - pd.to_datetime(ts)
+    except Exception:
+        return "—"
+    secs = int(delta.total_seconds())
+    if secs < 60:
+        return f"{secs}s ago"
+    mins = secs // 60
+    if mins < 60:
+        return f"{mins}m ago"
+    hours = mins // 60
+    if hours < 24:
+        return f"{hours}h ago"
+    days = hours // 24
+    return f"{days}d ago"
+
+_total_cases = int(stats["n"].iloc[0])
+_latest_ts = pd.to_datetime(stats["max_ts"].iloc[0])
+
+kpi1, kpi2 = st.columns(2)
+kpi1.metric("Cases in data", f"{_total_cases:,}")
+kpi2.metric(
+    "Most recent event",
+    _latest_ts.strftime("%Y-%m-%d %H:%M:%S") if pd.notna(_latest_ts) else "—",
+    delta=_pretty_delta(_latest_ts),
+)
 
 col1, col2, col3, col4 = st.columns([1.4, 1.4, 1, 1])
 with col1:
@@ -79,3 +127,8 @@ st.download_button(
     file_name="fraud_high_risk_top.csv",
     mime="text/csv",
 )
+
+# Auto-rerun the whole script to pick up new data
+if st.session_state.get("auto_refresh", False):
+    time.sleep(int(st.session_state.get("refresh_secs", REFRESH_DEFAULT)))
+    st.rerun()
