@@ -89,6 +89,28 @@ services:
       - "8000:8000"
     restart: unless-stopped
 
+  # ---------- Mage streaming pipeline (consumer/exporter) ----------
+  fraud_stream_pipeline:
+    image: jospablo777/fraud-prevention-stream-pipeline:latest
+    pull_policy: missing
+    networks: [kafkanet]
+    depends_on:
+      broker:
+        condition: service_healthy
+      create-topic:
+        condition: service_completed_successfully
+    environment:
+      # Kafka connectivity (internal listener)
+      KAFKA_BOOTSTRAP: broker:29092
+      KAFKA_TOPIC: creditcard-transactions
+      # Mage pipeline to run (matches Dockerfile default)
+      PIPELINE_NAME: fraud_stream_pipeline
+      # Persist exports to named volume
+      MAGE_EXPORT_BASE_DIR: /var/lib/mage/data
+    volumes:
+      - mage_data:/var/lib/mage/data
+    restart: unless-stopped
+
   # ---------- Kafka UI ----------
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
