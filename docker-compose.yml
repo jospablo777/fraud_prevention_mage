@@ -5,6 +5,7 @@ networks:
 
 volumes:
   kafka_data:
+  mage_data:
 
 services:
   # ---------- Kafka (KRaft, single node) ----------
@@ -82,7 +83,7 @@ services:
       FRAUD_RATE: "0.001727"
       INTERVAL_SECS: "20"
       BATCH_MIN: "10"
-      BATCH_MAX: "50"
+      BATCH_MAX: "80"
       AUTO_START: "true"   # set to "false" if you prefer POST /start manually
     ports:
       - "8000:8000"
