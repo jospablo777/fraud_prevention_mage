@@ -1,0 +1,106 @@
+name: fraud-prevention-mage
+
+networks:
+  kafkanet:
+
+volumes:
+  kafka_data:
+
+services:
+  # ---------- Kafka (KRaft, single node) ----------
+  broker:
+    image: apache/kafka:latest
+    hostname: broker                      # containers reach it as "broker"
+    networks: [kafkanet]
+    ports:
+      - "9092:9092"                        # external (host) listener
+    environment:
+      # KRaft single-node basics
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker:29093
+
+      # Listeners: internal for containers, external for host tools
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://host.docker.internal:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+      # Single-node friendly settings
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+
+
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+
+    # More forgiving healthcheck (waits for broker APIs to respond)
+    healthcheck:
+      test: [ "CMD-SHELL", "unset JMX_PORT; /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server broker:29092 >/dev/null 2>&1" ]
+      interval: 5s
+      timeout: 5s
+      start_period: 45s
+      retries: 40
+    restart: unless-stopped
+
+  # Ensure topic exists once the broker is healthy
+  create-topic:
+    image: apache/kafka:latest
+    networks: [kafkanet]
+    depends_on:
+      broker:
+        condition: service_healthy
+    entrypoint: ["/bin/sh","-ec"]
+    command:
+      - |
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:29092 \
+          --create --if-not-exists \
+          --topic creditcard-transactions \
+          --replication-factor 1 --partitions 3
+        # show topics for visibility
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:29092 --list
+    restart: "no"
+
+  # ---------- Our FastAPI data generator ----------
+  data_synthesizer:
+    build:
+      context: ./data_synthesizer
+      dockerfile: Dockerfile
+    image: jospablo777/data-generating-process-to-kafka:latest
+    networks: [kafkanet]
+    depends_on:
+      broker:
+        condition: service_healthy
+      create-topic:
+        condition: service_completed_successfully
+    environment:
+      # talk to Kafka via the INTERNAL listener
+      KAFKA_BOOTSTRAP: broker:29092
+      KAFKA_TOPIC: creditcard-transactions
+      SYNTH_PATH: /app/artifacts/creditcard_fraud_gc.pkl
+      FRAUD_RATE: "0.001727"
+      INTERVAL_SECS: "20"
+      BATCH_MIN: "1000"
+      BATCH_MAX: "6000"
+      AUTO_START: "true"   # set to "false" if you prefer POST /start manually
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  # ---------- Kafka UI ----------
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    networks: [kafkanet]
+    depends_on:
+      broker:
+        condition: service_healthy
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker:29092
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
