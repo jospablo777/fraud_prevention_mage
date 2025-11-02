@@ -1,0 +1,16 @@
+triggers:
+- description: null
+  envs: []
+  last_enabled_at: 2025-11-02 17:00:41.723726
+  name: fraud_pred_trigger
+  pipeline_uuid: stream_test
+  schedule_interval: '@once'
+  schedule_type: time
+  settings:
+    allow_blocks_to_fail: false
+    skip_if_previous_running: false
+  sla: null
+  start_time: 2025-11-02 16:21:00
+  status: inactive
+  token: 08343ce975d6481f83b62b33fc893a12
+  variables: {}
