@@ -78,6 +78,6 @@ def transform(messages: List[Dict], *args, **kwargs):
     prediction_data = prediction_data.sort_values('event_time')
 
     # Transactions with probabilities over 40% (this assuming it is a well calibrated probability)
-    high_risk_transactions = prediction_data[prediction_data.fraud_prob > 0.4].copy()
+    high_risk_transactions = prediction_data[prediction_data.fraud_prob > 0.2].copy()
 
     return high_risk_transactions
