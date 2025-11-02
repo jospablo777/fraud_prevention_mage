@@ -82,8 +82,8 @@ services:
       SYNTH_PATH: /app/artifacts/creditcard_fraud_gc.pkl
       FRAUD_RATE: "0.001727"
       INTERVAL_SECS: "20"
-      BATCH_MIN: "10"
-      BATCH_MAX: "80"
+      BATCH_MIN: "500"
+      BATCH_MAX: "3000"
       AUTO_START: "true"   # set to "false" if you prefer POST /start manually
     ports:
       - "8000:8000"
