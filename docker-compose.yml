@@ -34,7 +34,6 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_LOG_DIRS: /var/lib/kafka/data
 
-
     volumes:
       - kafka_data:/var/lib/kafka/data
 
@@ -67,10 +66,8 @@ services:
 
   # ---------- Our FastAPI data generator ----------
   data_synthesizer:
-    build:
-      context: ./data_synthesizer
-      dockerfile: Dockerfile
     image: jospablo777/data-generating-process-to-kafka:latest
+    pull_policy: missing
     networks: [kafkanet]
     depends_on:
       broker:
@@ -84,8 +81,8 @@ services:
       SYNTH_PATH: /app/artifacts/creditcard_fraud_gc.pkl
       FRAUD_RATE: "0.001727"
       INTERVAL_SECS: "20"
-      BATCH_MIN: "1000"
-      BATCH_MAX: "6000"
+      BATCH_MIN: "10"
+      BATCH_MAX: "50"
       AUTO_START: "true"   # set to "false" if you prefer POST /start manually
     ports:
       - "8000:8000"
