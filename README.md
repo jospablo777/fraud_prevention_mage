@@ -110,3 +110,92 @@ All of these are already wired in docker-compose.yml, but you can override with 
 `DEFAULT_LIMIT`: default table rows (optional)
 
 `REFRESH_MS`: autorefresh interval in ms (default `5000`)
+
+
+## How to verify it’s working
+
+1. Kafka UI (http://localhost:8080)
+
+Check topic `creditcard-transactions` is present and messages are flowing.
+
+2. Data generator (http://localhost:8000)
+
+If `AUTO_START=false`, use the API to start generation:
+```bash
+curl -X POST http://localhost:8000/start
+```
+
+3. Risk viewer (http://localhost:8501)
+
+You should see a live-updating table of high-risk transactions plus tiles:
+
+    - Cases in data (total rows matching filters)
+
+    - Most recent event (max `event_time`)
+
+## Accessing the exported data on your host
+This project uses a named volume (mage_data). On macOS/Linux:
+
+```bash
+# Find the full volume name (compose prefixes it with the project name)
+docker volume ls | grep mage_data
+# Example output: fraud-prevention-mage_mage_data
+
+# Copy the data out to your Desktop (macOS example)
+VOL=fraud-prevention-mage_mage_data
+docker run --rm -v $VOL:/data -v "$HOME/Desktop":/out busybox sh -lc 'cd /data && tar -cf /out/mage_data.tar .'
+
+# Unpack if you prefer a folder
+cd ~/Desktop && mkdir mage_data && tar -xf mage_data.tar -C mage_data
+```
+
+
+## Troubleshooting
+
+- Risk viewer shows no data
+
+    - Ensure the generator is running (look at data_synthesizer logs).
+
+    - Ensure the Mage pipeline is healthy and writing to /var/lib/mage/data.
+
+    - Check the viewer’s DATA_ROOT and GRAIN envs.
+
+- Kafka UI shows empty cluster
+
+    - Wait for the broker to pass healthchecks.
+
+    - Verify create-topic completed successfully.
+
+- `exec format error`
+
+    - Pull a multi-arch image or rebuild with --platform linux/amd64,linux/arm64 and --push.
+
+    - Optionally pin platform: per service in docker-compose.yml.
+
+- Where are my Parquet files?
+
+    - Inside the named volume mage_data at the path /var/lib/mage/data.
+
+    - Use the copy recipe above to inspect on your host.
+
+
+## Security & data notes
+
+- All data is synthetic and for demonstration only.
+
+- The included ML model and thresholds are illustrative.
+
+- Do not deploy this configuration as-is to production environments.
+
+
+## Roadmap (nice-to-haves)
+
+- Alerting sink (e.g., Slack/email) for extreme risk
+
+- Feature store integration (Feast)
+
+- Experiment trackers and ML models registry (e.g., MLFlow)
+
+- CI/CD with Buildx + multi-arch release workflow
+
+- Authentication for the viewer and generator APIs
