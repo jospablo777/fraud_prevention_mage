@@ -202,6 +202,8 @@ cd ~/Desktop && mkdir mage_data && tar -xf mage_data.tar -C mage_data
 
 ## Roadmap (nice-to-haves)
 
+- Docker images for diferent architectures (x86, arch64, etc.). I am currently working on this..
+
 - Alerting sink (e.g., Slack/email) for extreme risk
 
 - Feature store integration (Feast)
