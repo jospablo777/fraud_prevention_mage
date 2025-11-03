@@ -1,9 +1,10 @@
 # A real-time fraud prevention system (end-to-end)
 
-Here we build an end-to-end solution with a microservice architecture to help detect and manage fraud. This project is composed of 4 microservices:
+Here, we build an end-to-end solution with a microservice architecture to help detect and manage fraud with the aid of machine learning (ML). This project is composed of 5 microservices:
 
 - **A data generation process (FastAPI):** produces realistic transaction events, and simulates a transactional environment that pushes new transactions every 20 seconds.
 - **Apache Kafka:** acts as the streaming backbone.
+- **Kafka UI:** to explore our Kafka stream in a graphical user interface.
 - **Streaming pipeline (Mage):** consumes from Kafka, cleans data, runs an ML model, and writes results to Parquet.
 - **Risk viewer (Streamlit):** a lightweight dashboard that reads the Parquet exports and surfaces high-risk transactions.
 
@@ -57,6 +58,14 @@ Services:
 - Data generator API (FastAPI): http://localhost:8000
 
 - Risk viewer (Streamlit): http://localhost:8501
+
+- Mage Stream Pipeline (TODO): Mage UI, to build and manage pipelines
+
+
+### Mage pipeline
+This service processes data from the stream, computes the risk score using machine learning (ML), and sinks it to be used in our dashboard, which feeds our analysts.
+
+![Mage Stream Data Pipeline](./img/mage_stream_pipeline.png)
 
 ### Kafka UI
 Once the service is running, you can check our Kafka service in the [UI service](http://localhost:8080).
