@@ -2,7 +2,7 @@
 
 Here, we build an end-to-end solution with a microservice architecture to help detect and manage fraud with the aid of machine learning (ML). This project is composed of 5 microservices:
 
-- **A data generation process (FastAPI):** generates realistic transaction events and simulates a dynamic transactional environment that consistently adds new transactions to our Kafka stream. The [Synthetic Data Vault (SDV)](https://github.com/sdv-dev/SDV) powers this process by utilizing machine learning and statistical techniques to create a realistic data generation framework. This framework can help us simulate a data generation process (DGP) that can be automated, which in turn helps us establish our data infrastructure effectively.
+- **A data generation process (FastAPI):** generates realistic transaction events and simulates a dynamic transactional environment that consistently adds new transactions to our Kafka stream. The [Synthetic Data Vault (SDV)](https://github.com/sdv-dev/SDV) powers this process by utilizing machine learning and statistical techniques to create a realistic data generation framework. This framework help us simulate a data generation process (DGP) that can be automated, which in turn helps us establish our data infrastructure effectively.
 - **Apache Kafka:** acts as the streaming backbone.
 - **Kafka UI:** to explore our Kafka stream in a graphical user interface.
 - **Streaming pipeline (Mage):** consumes from Kafka, cleans data, runs an ML model, and writes results to Parquet.
