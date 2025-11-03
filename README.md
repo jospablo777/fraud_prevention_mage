@@ -175,27 +175,27 @@ cd ~/Desktop && mkdir mage_data && tar -xf mage_data.tar -C mage_data
 
 - Risk viewer shows no data
 
-    - Ensure the generator is running (look at data_synthesizer logs).
+    - Ensure the generator is running (look at `data_synthesizer` logs).
 
-    - Ensure the Mage pipeline is healthy and writing to /var/lib/mage/data.
+    - Ensure the Mage pipeline is healthy and writing to `/var/lib/mage/data`.
 
-    - Check the viewer’s DATA_ROOT and GRAIN envs.
+    - Check the viewer’s `DATA_ROOT` and `GRAIN` envs.
 
 - Kafka UI shows empty cluster
 
     - Wait for the broker to pass healthchecks.
 
-    - Verify create-topic completed successfully.
+    - Verify `create-topic completed successfully`.
 
 - `exec format error`
 
-    - Pull a multi-arch image or rebuild with --platform linux/amd64,linux/arm64 and --push.
+    - Pull a multi-arch image or rebuild with `--platform linux/amd64,linux/arm64 and --push`.
 
-    - Optionally pin platform: per service in docker-compose.yml.
+    - Optionally pin platform: per service in `docker-compose.yml`.
 
 - Where are my Parquet files?
 
-    - Inside the named volume mage_data at the path /var/lib/mage/data.
+    - Inside the named volume mage_data at the path `/var/lib/mage/data`.
 
     - Use the copy recipe above to inspect on your host.
 
