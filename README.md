@@ -58,6 +58,18 @@ Services:
 
 - Risk viewer (Streamlit): http://localhost:8501
 
+### Kafka UI
+Once the service is running, you can check our Kafka service in the [UI service](http://localhost:8080).
+
+![Kafka UI](./img/kafka_ui_screenshot.png)
+
+### Risk viewer
+Additionally, review the fraud risk monitoring dashboard in the [Risk Viewer](http://localhost:8501) service. Here is where the platform adds value, as it is the asset that the analyst uses to detect fraudulent transactions more quickly.
+
+![Risk Viewer](./img/risk_viewer_screenshot.png)
+
+Here, the people involved can view the IDs of transactions with a higher associated risk and conduct a thorough review to take actions to mitigate fraud.
+
 Follow logs:
 
 ```bash
