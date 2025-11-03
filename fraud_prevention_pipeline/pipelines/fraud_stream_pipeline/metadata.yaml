@@ -42,7 +42,7 @@ blocks:
   color: null
   configuration: {}
   downstream_blocks:
-  - uncharted_maple
+  - export_to_parquet
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -57,20 +57,23 @@ blocks:
   uuid: compute_fraud_risk_score
 - all_upstream_blocks_executed: false
   color: null
-  configuration: {}
+  configuration:
+    file_path: data_exporters/export_to_parquet.py
+    file_source:
+      path: data_exporters/export_to_parquet.py
   downstream_blocks: []
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: uncharted maple
+  name: export_to_parquet
   retry_config: null
   status: updated
   timeout: null
   type: data_exporter
   upstream_blocks:
   - compute_fraud_risk_score
-  uuid: uncharted_maple
+  uuid: export_to_parquet
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
