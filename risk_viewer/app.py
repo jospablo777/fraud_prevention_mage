@@ -117,7 +117,7 @@ df = con.execute(
 st.caption(f"Root: `{DATA_ROOT}` | Grain: `{GRAIN}` | Pattern: `{pattern}`")
 st.dataframe(
     df,
-    use_container_width=True,
+    width="stretch",
 )
 
 # Download
